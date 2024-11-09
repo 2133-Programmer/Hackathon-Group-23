@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Revision Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        .question-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7ffe7;
+            border: 1px solid #d3ffd3;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Personalized Revision Questions</h1>
+    <div class="form-container">
+        <h3>Enter your details</h3>
+        <form id="revisionForm">
+            <label for="subject">Subject:</label>
+            <select id="subject" required>
+                <option value="Math">Math</option>
+                <option value="English">English</option>
+                <option value="Science">Science</option>
+                <!-- Add more subjects as needed -->
+            </select>
+            <label for="interests">Interests (e.g., sports, music, technology):</label>
+            <input type="text" id="interests" required>
+            <label for="characteristics">Characteristics (e.g., visual learner, strong in algebra):</label>
+            <textarea id="characteristics" required></textarea>
+            <button type="submit">Generate Question</button>
+        </form>
+    </div>
+
+    <div id="question" class="question-container" style="display: none;">
+        <h3>Generated Question:</h3>
+        <p id="question-text"></p>
+    </div>
+
+    <script>
+        document.getElementById("revisionForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const subject = document.getElementById("subject").value;
+            const interests = document.getElementById("interests").value;
+            const characteristics = document.getElementById("characteristics").value;
+
+            const data = {
+                subject: subject,
+                interests: interests,
+                characteristics: characteristics
+            };
+
+            fetch("/get_questions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.question) {
+                    document.getElementById("question-text").textContent = data.question;
+                    document.getElementById("question").style.display = "block";
+                } else {
+                    alert("Error generating question: " + data.error);
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+</html>
